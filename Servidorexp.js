@@ -31,15 +31,4 @@ app.get('*',  (req, respuesta, next) => {
 	next();
 });
 
-//app.get('/',  (req, respuesta) => {
-//	console.log("req=",req)
-//	//respuesta.sendFile(dirLib.join(__dirname+'../views/index.ejs'));
-//	respuesta.render("page")
-//})
-
-//app.get('/contact',  (req, respuesta) => {
-//	//respuesta.sendFile(dirLib.join(__dirname+'../views/index.ejs'));
-//	respuesta.render("contact")
-//})
-
 app.listen(3000);

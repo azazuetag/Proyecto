@@ -1,0 +1,30 @@
+{
+  "name": "webnode",
+  "version": "1.0.0",
+  "description": "Proyecto de ejemplo de maestria",
+  "main": "servidorexp.js",
+  "dependencies": {
+    "ejs": "^2.5.7",
+    "express": "^4.16.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "node servidorexp.js",
+    "dev": "nodemon servidorexp.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/ramelp/mastersc.git"
+  },
+  "keywords": [
+    "Sitio",
+    "Web"
+  ],
+  "author": "AlexLora",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ramelp/mastersc/issues"
+  },
+  "homepage": "https://github.com/ramelp/mastersc#readme"
+}

@@ -4,8 +4,11 @@
   "description": "Proyecto de ejemplo de maestria",
   "main": "servidorexp.js",
   "dependencies": {
+    "body-parser": "^1.18.2",
     "ejs": "^2.5.7",
-    "express": "^4.16.2"
+    "express": "^4.16.2",
+    "formidable": "^1.1.1",
+    "multer": "^1.3.0"
   },
   "devDependencies": {},
   "scripts": {

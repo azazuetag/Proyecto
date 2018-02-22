@@ -11,12 +11,14 @@
     </div>
          
        <div class="two-thirds column form">
-                 <form action="#" id="commentForm" method="post" name="commentForm">
+                 <form action="#" id="commentForm" method="post" name="commentForm" enctype="multipart/form-data" >
                        <input class="required name" id="name" name="name" type="text" value="Name*" onFocus="if(this.value=='Name*') this.value=''"/>
                        <input class="required email" id="email" name="email" type="text" value="Email*" onFocus="if(this.value=='Email*') this.value=''"/>
                        <input class="phone" id="phone" name="phone" type="text" value="Phone" onFocus="if(this.value=='Phone') this.value=''"/>
                        <input class="website" id="website" name="website" type="text" value="Website" onFocus="if(this.value=='Website') this.value=''"/>
                        <textarea class="required message" name="message" onFocus="if(this.value=='Message*') this.value=''">Message*</textarea>
+                       <input type="file" name="archivo" id="archivo" multiple="">
+                       <input type="submit" value="Upload">
                        <button class="btn">Send</button>
                        <p class="white">Required fields are marked *</p>
                   </form>

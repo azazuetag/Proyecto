@@ -5,31 +5,63 @@ const parseador = require("body-parser")
 const fs = require("fs")
 const multer = require("multer")
 
+// Set staoge engine
+const storage = multer.diskStorage({
+	destination: './public/uploads/',
+	filename: function(req, file, cb){
+		cb(null,file.fieldname + '-' + Date.now() + dirLib.extname(file.originalname));
+	}
+});
+
+const upload = multer({
+	storage: storage,
+	limits:{filesize: 1000000},
+	fileFilter: function (req, file, cb){
+		checkFileType(file, cb);
+	}
+}).single('archivo');
+
+function checkFileType(file, cb){
+	const filetypes = /jpeg|jpg|png|gif/;
+	const extname = filetypes.test(dirLib.extname(file.originalname).toLowerCase());
+	const mimetype = filetypes.test(file.mimetype);
+
+	if (mimetype && extname){
+		return cb(null, true);
+	}else{
+		cb('Error: Images Only!');
+	}
+}
+
+// Inicia app
 var app = expressLib()
 
 app.use(expressLib.static('public'))
 app.use(expressLib.static('views'))
-app.use(multer({dest: "./uploads"}).single('archivo'));
 app.set('view engine', 'ejs')
 
 
 //app.use(parseador.json()); // support json encoded bodies
 var urlparser = parseador.urlencoded({ extended: false }); // support encoded bodies
 
-app.post('/contact', urlparser, function(req, respuesta) {
-	console.log("El archivos es:" + req.files);
-	if (!req.body) return respuesta.sendStatus(400)
-	fs.writeFile('./Archivostxt/'+ req.body.email + '.txt','{Nombre:' + req.body.name + ',Correo:' + req.body.email + ',Telefono:' + req.body.phone + ',SitioWeb:' + req.body.website + ',Mensaje:' + req.body.message + '}', function(error){
-		if (error)
-			console.log(error);
-		else{
-			console.log('Se creo el archivo');
+app.post('/contact', (req, respuesta)=> {
+
+	upload(req, respuesta,(err) => {
+		if (err){
+			console.log(err);
+		} else {
+			console.log(req.file);
+			respuesta.send('Prueba' + req.body.name);
+			fs.writeFile('./Archivostxt/'+ req.body.email + '.txt','{Nombre:' + req.body.name + ',Correo:' + req.body.email + ',Telefono:' + req.body.phone + ',SitioWeb:' + req.body.website + ',Mensaje:' + req.body.message + '}', function(error){
+			if (error)
+				console.log(error);
+			else
+				console.log('Se creo el archivo');
+			})
 		}
 
 	});
-	respuesta.send("Almacenado, muchas gracias:" + req.body.email)
 });
-
 
 app.get('*',  (req, respuesta, next) => {
 	var opc = req.url;
@@ -52,5 +84,7 @@ app.get('*',  (req, respuesta, next) => {
 	}
 	next();
 });
+
+
 
 app.listen(3000);

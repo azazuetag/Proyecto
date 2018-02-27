@@ -22,8 +22,10 @@ app.post('/contact', urlparser, function(req, respuesta) {
 	fs.writeFile('./Archivostxt/'+ req.body.email + '.txt','{Nombre:' + req.body.name + ',Correo:' + req.body.email + ',Telefono:' + req.body.phone + ',SitioWeb:' + req.body.website + ',Mensaje:' + req.body.message + '}', function(error){
 		if (error)
 			console.log(error);
-		else
+		else{
 			console.log('Se creo el archivo');
+		}
+
 	});
 	respuesta.send("Almacenado, muchas gracias:" + req.body.email)
 });
@@ -50,7 +52,5 @@ app.get('*',  (req, respuesta, next) => {
 	}
 	next();
 });
-
-
 
 app.listen(3000);

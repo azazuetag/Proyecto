@@ -1,1 +1,1 @@
-{Nombre:Alejandro,Correo:a_zazueta@hotmail.com,Telefono:123456789,SitioWeb:otro.com,Mensaje:Est es el registro en Contact}
+{Nombre:Alejandro,Correo:a_zazueta@hotmail.com,Telefono:kjhkhkjh,SitioWeb:kjhkjhkjh,Mensaje:kjhkjhkjhkjh}

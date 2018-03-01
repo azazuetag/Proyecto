@@ -29,7 +29,7 @@ function checkFileType(file, cb){
 	if (mimetype && extname){
 		return cb(null, true);
 	}else{
-		cb('Error: Images Only!');
+		cb('Error: Solo Imagenes!');
 	}
 }
 
@@ -48,16 +48,25 @@ app.post('/contact', (req, respuesta)=> {
 
 	upload(req, respuesta,(err) => {
 		if (err){
-			console.log(err);
+			res.render('contact',{
+				msg: err
+			});
 		} else {
-			console.log(req.file);
-			respuesta.send('Prueba' + req.body.name);
-			fs.writeFile('./Archivostxt/'+ req.body.email + '.txt','{Nombre:' + req.body.name + ',Correo:' + req.body.email + ',Telefono:' + req.body.phone + ',SitioWeb:' + req.body.website + ',Mensaje:' + req.body.message + '}', function(error){
-			if (error)
-				console.log(error);
-			else
-				console.log('Se creo el archivo');
+			//respuesta.send('Prueba' + req.body.name);
+			fs.writeFile('./Archivostxt/'+ req.body.email + '.txt','{Nombre:' + req.body.name + ',Correo:' + 
+				req.body.email + ',Telefono:' + req.body.phone + ',SitioWeb:' + req.body.website + ',Mensaje:' + 
+				req.body.message + '}', function(error)
+			{
+				if (error)
+					console.log(error);
+				else
+					console.log("Archivo txt Guardado");
 			})
+
+			respuesta.render("opciones", {
+					seleccion : 'Lista',
+					msg: 'Imagen Cargada'
+					});
 		}
 
 	});
@@ -78,6 +87,7 @@ app.get('*',  (req, respuesta, next) => {
 				console.log("Ejecutando la raiz " + opc);
 				break;
 			default:
+				console.log("Ejecutando" + opcion);
 				respuesta.render("opciones", locales);
 				break;	
 		}

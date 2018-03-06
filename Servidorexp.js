@@ -68,6 +68,12 @@ app.post('/contact', (req, respuesta)=> {
 		if (err){
 			console.log(err);
 		} else {
+            var sql = "Insert into contact(nombre,email,tel,website,mensaje,imagen) values ('"+req.body.name+"','"+req.body.email+"','"+req.body.phone+"','"+req.body.website+"','"+req.body.message+"','"+ req.file.filename +"')";
+            connectMysql.query(sql, function(err, result){
+                if (err) throw err;
+                console.log("1 Registro Agregado");
+            });
+            
 			fs.writeFile('./Archivostxt/'+ req.body.email + '.txt','{Nombre:' + req.body.name + ',Correo:' + 
 				req.body.email + ',Telefono:' + req.body.phone + ',SitioWeb:' + req.body.website + ',Mensaje:' + 
 				req.body.message + '}', function(error)

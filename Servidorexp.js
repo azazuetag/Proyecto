@@ -4,6 +4,7 @@ const plantilla = require("ejs")
 const parseador = require("body-parser")
 const fs = require("fs")
 const multer = require("multer")
+const connectMysql = require("./Servicios/db_connect_mysql")
 
 // Set staoge engine
 const storage = multer.diskStorage({
@@ -41,18 +42,32 @@ app.use(expressLib.static('views'))
 app.set('view engine', 'ejs')
 
 
-//app.use(parseador.json()); // support json encoded bodies
-var urlparser = parseador.urlencoded({ extended: false }); // support encoded bodies
+app.get('/lista', (req,res) =>{
+    var obj = {};
+    connectMysql.query('SELECT * FROM contact', function (err, result){
+        if (err)
+        {
+            throw err;
+        }
+        else
+        {
+            res.render("opciones",{
+                data: req.url,
+                contactos: result,
+                seleccion : 'lista'
+            });        
+        }
+    });
+});
+
+var urlparser = parseador.urlencoded({ extended: false }); 
 
 app.post('/contact', (req, respuesta)=> {
 
 	upload(req, respuesta,(err) => {
 		if (err){
-			res.render('contact',{
-				msg: err
-			});
+			console.log(err);
 		} else {
-			//respuesta.send('Prueba' + req.body.name);
 			fs.writeFile('./Archivostxt/'+ req.body.email + '.txt','{Nombre:' + req.body.name + ',Correo:' + 
 				req.body.email + ',Telefono:' + req.body.phone + ',SitioWeb:' + req.body.website + ',Mensaje:' + 
 				req.body.message + '}', function(error)
@@ -63,10 +78,6 @@ app.post('/contact', (req, respuesta)=> {
 					console.log("Archivo txt Guardado");
 			})
 
-			respuesta.render("opciones", {
-					seleccion : 'Lista',
-					msg: 'Imagen Cargada'
-					});
 		}
 
 	});
@@ -75,7 +86,6 @@ app.post('/contact', (req, respuesta)=> {
 app.get('*',  (req, respuesta, next) => {
 	var opc = req.url;
 	var opcion = opc.substring(1, opc.length);
-	console.log("la cadena es=" + opcion);
 	let locales = {
 					seleccion : opcion
 					}
@@ -84,17 +94,13 @@ app.get('*',  (req, respuesta, next) => {
 		switch (opc) {
 			case '/':
 				respuesta.render("page", locales);
-				console.log("Ejecutando la raiz " + opc);
 				break;
 			default:
-				console.log("Ejecutando" + opcion);
 				respuesta.render("opciones", locales);
 				break;	
 		}
 	}
 	next();
 });
-
-
 
 app.listen(3000);

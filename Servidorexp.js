@@ -4,7 +4,20 @@ const plantilla = require("ejs")
 const parseador = require("body-parser")
 const fs = require("fs")
 const multer = require("multer")
-const connectMysql = require("./Servicios/db_connect_mysql")
+const mongoose = require('mongoose')
+mongoose.connect("mongodb://localhost/mastersc")
+
+
+contact = new mongoose.Schema({
+	 nombre : String, 
+	 email : String, 
+	 tel : String, 
+	 website : String, 
+	 mensaje : String, 
+	 imagen : String
+}, { collection : 'contact'});
+
+var contact = mongoose.model('contact', contact);
 
 // Set staoge engine
 const storage = multer.diskStorage({
@@ -43,13 +56,11 @@ app.set('view engine', 'ejs')
 
 
 app.get('/lista', (req,res) =>{
-    var obj = {};
-    connectMysql.query('SELECT * FROM contact', function (err, result){
-        if (err)
-        {
-            throw err;
-        }
-        else
+	contact.find(function(error, result){
+		if (error) { 
+			console.log(error);
+		}
+		else
         {
             res.render("opciones",{
                 data: req.url,
@@ -57,8 +68,9 @@ app.get('/lista', (req,res) =>{
                 seleccion : 'lista'
             });        
         }
-    });
+	});
 });
+
 
 var urlparser = parseador.urlencoded({ extended: false }); 
 
@@ -68,12 +80,19 @@ app.post('/contact', (req, respuesta)=> {
 		if (err){
 			console.log(err);
 		} else {
-            var sql = "Insert into contact(nombre,email,tel,website,mensaje,imagen) values ('"+req.body.name+"','"+req.body.email+"','"+req.body.phone+"','"+req.body.website+"','"+req.body.message+"','"+ req.file.filename +"')";
-            connectMysql.query(sql, function(err, result){
-                if (err) throw err;
-                console.log("1 Registro Agregado");
-            });
-            
+				var data = {
+							 nombre : req.body.name, 
+							 email : req.body.email, 
+							 tel : req.body.phone, 
+							 website : req.body.website, 
+							 mensaje : req.body.message, 
+							 imagen : req.file.filename
+							};
+					var contacto = new contact(data);
+					contacto.save(function(err){
+						console.log(contacto);
+					});
+
 			fs.writeFile('./Archivostxt/'+ req.body.email + '.txt','{Nombre:' + req.body.name + ',Correo:' + 
 				req.body.email + ',Telefono:' + req.body.phone + ',SitioWeb:' + req.body.website + ',Mensaje:' + 
 				req.body.message + '}', function(error)
@@ -83,9 +102,7 @@ app.post('/contact', (req, respuesta)=> {
 				else
 					console.log("Archivo txt Guardado");
 			})
-
 		}
-
 	});
 });
 
